@@ -7,3 +7,4 @@ $ASTERIX -d config/asterix.ini -R -jh -f sample_data/cat_001_002.pcap -FL sample
 $ASTERIX -d config/asterix.ini -R -x -f sample_data/cat_001_002.pcap -FL sample_data/filter.txt > "test_output/cat_001_002.xml"
 $ASTERIX -d config/asterix.ini -R -f sample_data/cat_001_002.pcap -FL sample_data/filter.txt > "test_output/cat_001_002.txt"
 $ASTERIX -d config/asterix.ini -R -l -f sample_data/cat_001_002.pcap -FL sample_data/filter.txt > "test_output/cat_001_002_line.txt"
+$ASTERIX -d config/asterix.ini -f sample_data/cat21_re.ast -jh > "test_output/cat_021_jsonh.txt"

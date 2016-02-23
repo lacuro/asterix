@@ -22,6 +22,7 @@ test "Test jsonh CAT_001_002" "$ASTERIX -d config/asterix.ini -R -jh -f sample_d
 test "Test xml CAT_001_002" "$ASTERIX -d config/asterix.ini -R -x -f sample_data/cat_001_002.pcap -LF test_output/filter.txt" "test_output/cat_001_002.xml"
 test "Test txt CAT_001_002" "$ASTERIX -d config/asterix.ini -R -f sample_data/cat_001_002.pcap -LF test_output/filter.txt" "test_output/cat_001_002.txt"
 test "Test line CAT_001_002" "$ASTERIX -d config/asterix.ini -R -l -f sample_data/cat_001_002.pcap -LF test_output/filter.txt" "test_output/cat_001_002_line.txt"
+test "Test jsonh CAT_021" "$ASTERIX -d config/asterix.ini -f sample_data/cat21_re.ast -jh" "test_output/cat_021_jsonh.txt"
 
 if [ "$failedtests" == "0" ]; then
   echo "All tests OK"
