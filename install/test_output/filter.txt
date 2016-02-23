@@ -689,6 +689,31 @@ CAT021:I295:ROA                                              Age of the Roll Ang
 CAT021:I295:ARA                                              Age of the latest update of an active ACAS Resolution Advisory
 CAT021:I295:SCC                                              Age of the latest information received on the surface capabilities and characteristics of the respective target
 CAT021:I400:RID                                              Receiver ID
+CAT021:IRE:spare                                             Spare bits set to zero
+CAT021:IRE:BPS                                               Barometric Pressure Setting
+CAT021:IRE:spare                                             Spare bits set to zero
+CAT021:IRE:HRD                                               Horizontal Reference Direction
+CAT021:IRE:Stat                                              Selected Heading Status
+CAT021:IRE:SelH                                              Selected Heading
+CAT021:IRE:AP                                                Autopilot engaged
+CAT021:IRE:VN                                                VNAV Active (Vertical Navigation)
+CAT021:IRE:AH                                                Altitude Hold engaged
+CAT021:IRE:AM                                                Approach Mode active
+CAT021:IRE:spare                                             Spare bits set to zero
+CAT021:IRE:GAO                                               GPS Antenna Offset
+CAT021:IRE:STP                                               Aircraft stopped
+CAT021:IRE:HTS                                               Heading/Ground Track
+CAT021:IRE:HTT                                               Heading/Ground data
+CAT021:IRE:HRD                                               North
+CAT021:IRE:GSS                                               Ground Speed
+CAT021:IRE:FX                                                Extension indicator
+CAT021:IRE:HGT                                               Heading/Ground Track information
+CAT021:IRE:FX                                                Extension indicator
+CAT021:IRE:ES                                                1090 ES IN capability
+CAT021:IRE:UAT                                               UAT capability
+CAT021:IRE:spare                                             Spare bits set to zero
+CAT021:IRE:FX                                                Extension indicator
+CAT021:IRE:TNH                                               Magnetic Heading
 CAT030:I010:SAC                                              System Area Code
 CAT030:I010:SIC                                              System Identification Code
 CAT030:I015:UserN                                            User number
