@@ -8,18 +8,38 @@ python:
 - '3.5'
 - 3.5-dev
 - nightly
+
+addons:
+  sonarcloud:
+    organization: "dsalantic-github"
+    token:
+      secure: ""
+      
 before_install:
 - sudo apt-get -qq update
 - sudo apt-get install valgrind
+
 compiler:
 - gcc
+
 install:
-- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then cd src;make;make MODE=DEBUG;make
-  test;cd ..; fi
+- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then 
+  cd src;make;make MODE=DEBUG;make
+  test;cd ..; 
+  fi
 - python setup.py install
+
 script:
 - if [[ $TRAVIS_PYTHON_VERSION == '2*' ]]; then python -m unittest discover; fi
 - if [[ $TRAVIS_PYTHON_VERSION != 2* ]]; then python -m unittest; fi
+- if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then
+  cd src;make clean; build-wrapper-linux-x86-64 --out-dir bw-output make all; sonar-scaner;
+fi
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+    
 deploy:
   provider: pypi
   user: dsalantic
