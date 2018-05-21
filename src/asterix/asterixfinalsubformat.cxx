@@ -50,12 +50,16 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
       LOGERROR(1, "Couldn't read packet header.\n");
       return false;
   }
-
+  
+  
   unsigned long nTimestamp = (unsigned long) finalRecordHeader.m_nTimeMMSB << 16;
   nTimestamp |= (unsigned long) finalRecordHeader.m_nTimeMSB << 8;
   nTimestamp |= (unsigned long) finalRecordHeader.m_nTimeLSB;
   // convert timestamp to milliseconds (resolution is 10ms in final format)
+  //nTimestamp = (double)nTimestamp;
   nTimestamp = nTimestamp * 10;
+  double donTimestamp  = nTimestamp;
+  
 
   unsigned int neededLen = finalRecordHeader.m_nByteCountMSB;
   neededLen <<= 8;
@@ -78,7 +82,7 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
 			unsigned int currTimeMsec = currTime.tv_sec*1000+currTime.tv_usec/1000;
 			if (lastMyTimeMSec != 0 && lastFileTimeMSec != 0)
 			{
-				unsigned int diffFile = nTimestamp - lastFileTimeMSec;
+				unsigned int diffFile = donTimestamp - lastFileTimeMSec;
 				unsigned int diffMy = currTimeMsec - lastMyTimeMSec;
 
 				if (diffFile > diffMy)
@@ -87,7 +91,7 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
 				}
 			}
 
-			lastFileTimeMSec = nTimestamp;
+			lastFileTimeMSec = donTimestamp;
 			lastMyTimeMSec = currTimeMsec;
 		}
 	}
@@ -112,7 +116,7 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
   if (Descriptor.m_pAsterixData)
     delete Descriptor.m_pAsterixData;
 
-  Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(pBuffer, neededLen, nTimestamp);
+  Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(pBuffer, neededLen, donTimestamp);
 
   return true;
 }

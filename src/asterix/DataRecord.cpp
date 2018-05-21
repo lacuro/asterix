@@ -27,7 +27,7 @@
 #include "Utils.h"
 #include "asterixformat.hxx"
 
-DataRecord::DataRecord(Category* cat, int nID, unsigned long len, const unsigned char* data, unsigned long nTimestamp)
+DataRecord::DataRecord(Category* cat, int nID, unsigned long len, const unsigned char* data, double nTimestamp)
 : m_pCategory(cat)
 , m_nID(nID)
 , m_nLength(len)
@@ -201,17 +201,17 @@ bool DataRecord::getText(std::string& strResult, std::string& strHeader, const u
 		strNewResult += format("\nLen: %ld", m_nLength);
 		strNewResult += format("\nCRC: %08X", m_nCrc);
 		if (m_nTimestamp != 0)
-		strNewResult += format("\nTimestamp: %ld", m_nTimestamp);
+		strNewResult += format("\nTimestamp: %.0f", m_nTimestamp);
 		break;
 	case CAsterixFormat::EJSON:
 		if (m_nTimestamp != 0)
-		strNewResult = format("{\"id\":%d,\"length\":%ld,\"crc\":\"%08X\",\"timestamp\":%ld,\"CAT%03d\":{", m_nID, m_nLength, m_nCrc, m_nTimestamp, m_pCategory->m_id);
+		strNewResult = format("{\"id\":%d,\"length\":%ld,\"crc\":\"%08X\",\"timestamp\":%.4f,\"CAT%03d\":{", m_nID, m_nLength, m_nCrc, m_nTimestamp, m_pCategory->m_id);
 		else
 			strNewResult = format("{\"id\":%d,\"length\":%ld,\"crc\":\"%08X\",\"CAT%03d\":{", m_nID, m_nLength, m_nCrc, m_pCategory->m_id);
 		break;
 	case CAsterixFormat::EJSONH:
 		if (m_nTimestamp != 0)
-		strNewResult = format("{\"id\":%d,\n\"length\":%ld,\n\"crc\":\"%08X\",\n\"timestamp\":%ld,\n\"CAT%03d\":{\n", m_nID, m_nLength, m_nCrc, m_nTimestamp, m_pCategory->m_id);
+		strNewResult = format("{\"id\":%d,\n\"length\":%ld,\n\"crc\":\"%08X\",\n\"timestamp\":%.4f,\n\"CAT%03d\":{\n", m_nID, m_nLength, m_nCrc, m_nTimestamp, m_pCategory->m_id);
 		else
 			strNewResult = format("{\"id\":%d,\n\"length\":%ld,\n\"crc\":\"%08X\",\n\"CAT%03d\":{\n", m_nID, m_nCrc, m_nLength, m_pCategory->m_id);
 		break;

@@ -102,7 +102,7 @@ bool CAsterixPcapSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, 
 	}
 
 	// Save PCAP packet timestamp (keep milliseconds since midnight)
-	unsigned long nTimestamp = (m_ePcapRecHeader.ts_sec % 86400) * 1000 + m_ePcapRecHeader.ts_usec / 1000;
+	double nTimestamp = (m_ePcapRecHeader.ts_sec % 86400) * 1000 + m_ePcapRecHeader.ts_usec / 1000;
 
 	if (gSynchronous)
 	{ // In synchronous mode make delays between packets to simulate real tempo

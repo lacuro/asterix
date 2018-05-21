@@ -178,7 +178,8 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 	// get current timstamp in ms since midnight
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
-	unsigned long nTimestamp = (tp.tv_sec % 86400) * 1000 + tp.tv_usec / 1000;
+        
+	double nTimestamp = (tp.tv_sec % 86400) * 1000 + tp.tv_usec / 1000;
 
 	// parse packet
 	if (oradis)
