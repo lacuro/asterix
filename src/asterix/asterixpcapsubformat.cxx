@@ -102,7 +102,7 @@ bool CAsterixPcapSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, 
 	}
 
 	// Save PCAP packet timestamp (keep milliseconds since midnight)
-	double nTimestamp = (m_ePcapRecHeader.ts_sec % 86400) * 1000 + m_ePcapRecHeader.ts_usec / 1000;
+	double dTimestamp = (m_ePcapRecHeader.ts_sec % 86400) * 1000 + m_ePcapRecHeader.ts_usec / 1000;
 
 	if (gSynchronous)
 	{ // In synchronous mode make delays between packets to simulate real tempo
@@ -272,7 +272,7 @@ bool CAsterixPcapSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, 
 				break;
 
 			// Parse ASTERIX data
-			AsterixData* m_ptmpAsterixData = Descriptor.m_InputParser.parsePacket(pPacketPtr, byteCount-6, nTimestamp);
+			AsterixData* m_ptmpAsterixData = Descriptor.m_InputParser.parsePacket(pPacketPtr, byteCount-6, dTimestamp);
 
 			if (Descriptor.m_pAsterixData == NULL)
 			{
@@ -289,7 +289,7 @@ bool CAsterixPcapSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, 
 	}
 	else
 	{
-		Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(pPacketPtr, m_nDataLength, nTimestamp);
+		Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(pPacketPtr, m_nDataLength, dTimestamp);
 	}
 
 	delete[] pPacketBuffer;

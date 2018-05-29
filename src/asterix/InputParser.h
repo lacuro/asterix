@@ -36,9 +36,9 @@ class InputParser
 public:
   InputParser(AsterixDefinition* pDefinition);
   ~InputParser() { if (m_pDefinition) delete m_pDefinition; }
-  AsterixData* parsePacket(const unsigned char* m_pBuffer, unsigned int m_nBufferSize, double nTimestamp = 0.0);
+  AsterixData* parsePacket(const unsigned char* m_pBuffer, unsigned int m_nBufferSize, double dTimestamp = 0.0);
   DataBlock* parse_next_data_block(const unsigned char* m_pData, unsigned int &m_nPos, unsigned int m_nBufferSize,
-    double nTimestamp, unsigned int &m_nDataLength);
+    double dTimestamp, unsigned int &m_nDataLength);
   
   std::string printDefinition();
   bool filterOutItem(int cat, std::string item, const char* name);

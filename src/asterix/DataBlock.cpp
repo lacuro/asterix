@@ -28,10 +28,10 @@
 
 extern bool gFiltering;
 
-DataBlock::DataBlock(Category* cat, unsigned long len, const unsigned char* data, double nTimestamp)
+DataBlock::DataBlock(Category* cat, unsigned long len, const unsigned char* data, double dTimestamp)
 : m_pCategory(cat)
 , m_nLength(len)
-, m_nTimestamp(nTimestamp)
+, m_dTimestamp(dTimestamp)
 , m_bFormatOK(false)
 {
   const unsigned char* m_pItemDataStart = data;
@@ -46,7 +46,7 @@ DataBlock::DataBlock(Category* cat, unsigned long len, const unsigned char* data
 
   while(nUnparsed > 0)
   {
-    DataRecord* dr = new DataRecord(cat, counter++, nUnparsed, m_pItemDataStart, (double)nTimestamp);
+    DataRecord* dr = new DataRecord(cat, counter++, nUnparsed, m_pItemDataStart, (double)dTimestamp);
 
     if (!dr)
     {

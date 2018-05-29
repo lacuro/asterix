@@ -86,11 +86,11 @@ PyObject *python_parse(const unsigned char* pBuf, unsigned int len)
     // get current timstamp in ms since epoch
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
-	unsigned long nTimestamp = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	double dTimestamp = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 
     if (inputParser)
     {
-        AsterixData* pData = inputParser->parsePacket(pBuf, len, nTimestamp);
+        AsterixData* pData = inputParser->parsePacket(pBuf, len, dTimestamp);
         if (pData)
         { // convert to Python format
           PyObject *lst = pData->getData();
@@ -108,7 +108,7 @@ PyObject *python_parse_with_offset(const unsigned char* pBuf, unsigned int len, 
     // get current timstamp in ms since epoch
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
-	unsigned long nTimestamp = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	double dTimestamp = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 
     if (inputParser)
     {
@@ -122,7 +122,7 @@ PyObject *python_parse_with_offset(const unsigned char* pBuf, unsigned int len, 
             {
 				const unsigned char* pBuf_offset = (pBuf + m_nPos);
                 DataBlock* block = inputParser->parse_next_data_block(
-                    pBuf_offset, m_nPos, len, nTimestamp, m_nDataLength);
+                    pBuf_offset, m_nPos, len, dTimestamp, m_nDataLength);
                 if (block) {
                     pData->m_lDataBlocks.push_back(block);
                     current_blocks_count++;

@@ -179,7 +179,7 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
         
-	double nTimestamp = (tp.tv_sec % 86400) * 1000 + tp.tv_usec / 1000;
+	double dTimestamp = (tp.tv_sec % 86400) * 1000 + tp.tv_usec / 1000;
 
 	// parse packet
 	if (oradis)
@@ -210,7 +210,7 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 				break;
 
 			// Parse ASTERIX data
-			AsterixData* m_ptmpAsterixData = Descriptor.m_InputParser.parsePacket(pPacketPtr, byteCount-6, nTimestamp);
+			AsterixData* m_ptmpAsterixData = Descriptor.m_InputParser.parsePacket(pPacketPtr, byteCount-6, dTimestamp);
 
 			if (Descriptor.m_pAsterixData == NULL)
 			{
@@ -227,7 +227,7 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 	}
 	else
 	{
-		Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(Descriptor.GetBuffer(), Descriptor.GetBufferLen(), nTimestamp);
+		Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(Descriptor.GetBuffer(), Descriptor.GetBufferLen(), dTimestamp);
 	}
 
 	return true;
