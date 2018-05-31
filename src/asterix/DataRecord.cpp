@@ -201,7 +201,7 @@ bool DataRecord::getText(std::string& strResult, std::string& strHeader, const u
 		strNewResult += format("\nLen: %ld", m_nLength);
 		strNewResult += format("\nCRC: %08X", m_nCrc);
 		if (m_dTimestamp != 0)
-		strNewResult += format("\nTimestamp: %.0f", m_dTimestamp);
+		strNewResult += format("\nTimestamp: %.4f", m_dTimestamp);
 		break;
 	case CAsterixFormat::EJSON:
 		if (m_dTimestamp != 0)
