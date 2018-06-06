@@ -257,6 +257,16 @@ int main(int argc, const char *argv[])
 			}
 			strIPInput = argv[++i];
 		}
+		else if((arg == "-g"))
+		{
+			if(i >= argc-1)
+			{
+				std::cerr << "Error: " + arg + " option requires one argument." << std::endl;
+				return 1;
+			}
+			strFileInput = argv[++i];
+
+		}
 	}
 
 	// definitions file
@@ -357,6 +367,7 @@ int main(int argc, const char *argv[])
     			exit (2);
     		}
     		char line[1024];
+			fseek(ff,2200,SEEK_SET);
     		while( fgets(line,1024,ff) )
     		{
 
