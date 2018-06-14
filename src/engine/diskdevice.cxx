@@ -286,11 +286,17 @@ bool CDiskDevice::Init(const char *path)
     if (_input)
     {
         // Initialize as input device
-
+        
          ASSERT( !(_mode & DD_MODE_PACKETFILE) ); // not supported for input
 //         ASSERT( !(_mode & DD_MODE_TEMPNAME) ); // not supported for input
 
         _fileStream = fopen(fname, "r");
+        if(strstr(fname,".gps"))
+        {
+
+            fseek(_fileStream,2200,SEEK_SET);
+
+        }
         _onstart = true;
     }
     else

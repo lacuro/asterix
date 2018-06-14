@@ -104,7 +104,7 @@ int main(int argc, const char *argv[])
 
 	bool bListDefinitions = false;
 	bool bLoopFile = false;
-
+	
 	for (int i = 1; i < argc; ++i)
 	{
 		std::string arg = argv[i];
@@ -246,7 +246,7 @@ int main(int argc, const char *argv[])
 				std::cerr << "Error: " + arg + " option requires one argument." << std::endl;
 				return 1;
 			}
-			strFileInput = argv[++i];
+			strFileInput = argv[++i];	
 		}
 		else if ((arg == "-i"))
 		{
@@ -339,7 +339,7 @@ int main(int argc, const char *argv[])
 
 	// Print out options
 	LOGDEBUG(inputChannel, "Input channel description: %s\n", inputChannel);
-
+	
 	for (unsigned int i=0; i<nOutput; i++)
 	{
 		LOGDEBUG(outputChannel[i], "Output channel %d description: %s\n", i+1, outputChannel[i]);
@@ -351,7 +351,7 @@ int main(int argc, const char *argv[])
     // Finally execute converter engine
     if (CConverterEngine::Instance()->Initialize(inputChannel, outputChannel, nOutput, chFailover))
     {
-    	if (strFilterFile.empty() == false)
+		if (strFilterFile.empty() == false)
     	{ // read filter file and configure items
 			CBaseFormatDescriptor* desc = CChannelFactory::Instance()->GetInputChannel()->GetFormatDescriptor();
 			if (desc == NULL)
@@ -366,11 +366,11 @@ int main(int argc, const char *argv[])
     			std::cerr << "Error: Filter file " +strFilterFile+ " not found." << std::endl;
     			exit (2);
     		}
-    		char line[1024];
-			fseek(ff,2200,SEEK_SET);
-    		while( fgets(line,1024,ff) )
+    		
+			char line[1024];
+			while( fgets(line,1024,ff) )
     		{
-
+			
 			int cat = 0;
 			char item[128] = "";
 			char name[128] = "";
