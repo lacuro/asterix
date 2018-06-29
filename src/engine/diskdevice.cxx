@@ -139,7 +139,7 @@ bool CDiskDevice::Read(void *data, size_t len)
             DoneWithFile();
         }
     }
-
+    
     ResetReadErrors(true);
     return true;
 }
@@ -282,7 +282,7 @@ bool CDiskDevice::Init(const char *path)
     ResetAllErrors();
 
     char* fname = (char*) path;
-
+   
     if (_input)
     {
         // Initialize as input device
@@ -731,4 +731,11 @@ bool CDiskDevice::IsOpened()
         return true;
 
     return _opened;
+}
+
+char* CDiskDevice::getFileName()
+{
+    
+    return _fileName;
+
 }

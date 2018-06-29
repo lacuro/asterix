@@ -31,6 +31,7 @@
 #include "devicefactory.hxx"
 #include "basedevice.hxx"
 #include "descriptor.hxx"
+#include "diskdevice.hxx"
 
 #include "baseformat.hxx"
 #include "asterixformat.hxx"
@@ -215,7 +216,7 @@ bool CChannelFactory::AttachFormatter(const char* sFormatName, const char* sForm
         LOGERROR(1, "Unknown format '%s'.\n", sFormatName);
         return false;
     }
-
+   
     // Create format descriptor
     if ((*formatDesc = _formatEngine->CreateFormatDescriptor(formatNo, sFormatDescriptor)) == NULL)
     {
@@ -231,7 +232,7 @@ bool CChannelFactory::AttachFormatter(const char* sFormatName, const char* sForm
 bool CChannelFactory::WaitForPacket(const unsigned int secondsToWait)
 {
     ASSERT(_formatEngine);
-
+    
     if (_inputChannel == NULL)
     {
         LOGERROR(1, "Select() - Input device not installed.\n");
@@ -254,8 +255,11 @@ bool CChannelFactory::WaitForPacket(const unsigned int secondsToWait)
 
 bool CChannelFactory::ReadPacket()
 {
-    ASSERT(_formatEngine);
+    
+    bool oKread;
 
+    ASSERT(_formatEngine);
+    
     if (_inputChannel == NULL)
     {
         LOGERROR(1, "ReadPacket() - Input device not installed.\n");
@@ -264,7 +268,7 @@ bool CChannelFactory::ReadPacket()
 
     // Get the reference to the input device
     CBaseDevice *inputDevice = CDeviceFactory::Instance()->GetDevice(_inputChannel->GetDeviceNo());
-
+    
     if (inputDevice == NULL)
     {
         LOGERROR(1, "ReadPacket() - Cannot get the input device.\n");
@@ -281,9 +285,21 @@ bool CChannelFactory::ReadPacket()
 
     unsigned int formatNo = _inputChannel->GetFormatNo();
     bool discard = false;
-
+ 
     // FormatEngine - read packet from the input device using predefined format
-    return _formatEngine->ReadPacket(*formatDescriptor, *inputDevice, formatNo, discard);
+    oKread =_formatEngine->ReadPacket(*formatDescriptor, *inputDevice, formatNo, discard);
+
+    // Get the reference to the diskdevice
+    CDiskDevice *diskDevice = dynamic_cast<CDiskDevice *>(inputDevice);
+    if (diskDevice != NULL && strstr(diskDevice->getFileName(),".gps"))
+    {
+        
+        _formatEngine->ReadPacket(*formatDescriptor, *inputDevice, 3, discard);
+
+    }
+
+    return oKread;
+
 }
 
 

@@ -59,15 +59,15 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
   //nTimestamp = (double)nTimestamp;
   nTimestamp = nTimestamp * 10;
   double dTimestamp  = nTimestamp;
-  
 
-  unsigned int neededLen = finalRecordHeader.m_nByteCountMSB;
+  
+  int neededLen = finalRecordHeader.m_nByteCountMSB;
   neededLen <<= 8;
   neededLen |= finalRecordHeader.m_nByteCountLSB;
 
   neededLen -= sizeof(finalRecordHeader); // minus header
   neededLen -= sizeof(padding); // minus padding
-
+  
   if (neededLen <= 0)
   {
     LOGERROR(1, "Wrong final record header.\n");
@@ -90,8 +90,8 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
 					usleep((diffFile-diffMy)*1000);
 				}
 			}
-
-			lastFileTimeMSec = dTimestamp;
+			
+      lastFileTimeMSec = dTimestamp;
 			lastMyTimeMSec = currTimeMsec;
 		}
 	}
@@ -117,7 +117,7 @@ bool CAsterixFinalSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor,
     delete Descriptor.m_pAsterixData;
 
   Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(pBuffer, neededLen, dTimestamp);
-
+  
   return true;
 }
 

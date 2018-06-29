@@ -119,6 +119,7 @@ public:
     virtual bool IsPacketDevice() { return false; };
     virtual bool IsOpened();
     virtual unsigned int BytesLeftToRead(); // return number of bytes left to read or 0 if unknown
+    virtual char* getFileName(); // return File Name 
 
 private:
     bool Init(const char *path);
