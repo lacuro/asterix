@@ -33,6 +33,7 @@
 #include "asterixfinalsubformat.hxx"
 #include "asterixformatdescriptor.hxx"
 #include "asterixhdlcsubformat.hxx"
+#include "diskdevice.hxx"
 
 #include "Tracer.h"
 #include "XMLParser.h"
@@ -61,7 +62,15 @@ bool CAsterixFormat::ReadPacket(CBaseFormatDescriptor& formatDescriptor, CBaseDe
   switch (formatType)
   {
       case ERaw:
-          return CAsterixRawSubformat::ReadPacket(formatDescriptor, device, discard);
+      {  
+          int oradis = 0; //Default oradis 
+          
+          CDiskDevice *diskDevice = dynamic_cast<CDiskDevice *>(&device);
+          
+          diskDevice != NULL && strstr(diskDevice->getFileName(),".gps") ? oradis = 2 : oradis = 1;
+
+          return CAsterixRawSubformat::ReadPacket(formatDescriptor, device, discard,oradis);
+      }
       case EPcap:
           return CAsterixPcapSubformat::ReadPacket(formatDescriptor, device, discard);
       case EOradisRaw:
@@ -151,7 +160,17 @@ bool CAsterixFormat::ProcessPacket(CBaseFormatDescriptor& formatDescriptor, CBas
   switch (formatType)
   {
       case ERaw:
-          return CAsterixRawSubformat::ProcessPacket(formatDescriptor, device, discard);
+      {  
+          //LOGERROR(1, "Dentro de ERAw\n");
+          
+          int oradis = 0; //Default oradis 
+          
+          CDiskDevice *diskDevice = dynamic_cast<CDiskDevice *>(&device);
+          
+          diskDevice != NULL && strstr(diskDevice->getFileName(),".gps") ? oradis = 2 : oradis = 1;
+
+          return CAsterixRawSubformat::ProcessPacket(formatDescriptor, device, discard,oradis);
+      }
       case EPcap:
           return CAsterixPcapSubformat::ProcessPacket(formatDescriptor, device, discard);
       case EOradisRaw:
@@ -314,7 +333,7 @@ bool CAsterixFormat::GetFormatNo(const char *formatName, unsigned int &formatTyp
           formatType = i;
       }
   }
-
+  
   return found;
 }
 

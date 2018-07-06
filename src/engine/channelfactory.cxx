@@ -255,9 +255,6 @@ bool CChannelFactory::WaitForPacket(const unsigned int secondsToWait)
 
 bool CChannelFactory::ReadPacket()
 {
-    
-    bool oKread;
-
     ASSERT(_formatEngine);
     
     if (_inputChannel == NULL)
@@ -285,24 +282,11 @@ bool CChannelFactory::ReadPacket()
 
     unsigned int formatNo = _inputChannel->GetFormatNo();
     bool discard = false;
- 
+    
     // FormatEngine - read packet from the input device using predefined format
-    oKread =_formatEngine->ReadPacket(*formatDescriptor, *inputDevice, formatNo, discard);
-
-    // Get the reference to the diskdevice
-    CDiskDevice *diskDevice = dynamic_cast<CDiskDevice *>(inputDevice);
-    if (diskDevice != NULL && strstr(diskDevice->getFileName(),".gps"))
-    {
-        
-        _formatEngine->ReadPacket(*formatDescriptor, *inputDevice, 3, discard);
-
-    }
-
-    return oKread;
+    return _formatEngine->ReadPacket(*formatDescriptor, *inputDevice, formatNo, discard);
 
 }
-
-
 
 bool CChannelFactory::WritePacket(const unsigned int outputChannel)
 {

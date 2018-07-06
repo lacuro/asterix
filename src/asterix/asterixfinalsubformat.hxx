@@ -99,23 +99,8 @@ private:
       unsigned char m_nTimeMMSB;
       unsigned char m_nTimeMSB;
       unsigned char m_nTimeLSB;
-      unsigned char m_nTimeLSB1;
-      unsigned char m_nTimeLSB2;
     };
-    /*struct sFinalRecordHeaderGPS
-    {
-      unsigned char m_nByteCountMSB;
-      unsigned char m_nByteCountLSB;
-      unsigned char m_nBoard;
-      unsigned char m_nLine;
-      unsigned char m_nRecordingDay;
-      unsigned char m_nTimeMMSB;
-      unsigned char m_nTimeMSB;
-      unsigned char m_nTimeLSB;
-      unsigned char m_nTimeLSB1;
-      unsigned char m_nTimeLSB2;
-    };*/
-
+    
 };
 
 #endif

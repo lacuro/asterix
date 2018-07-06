@@ -201,17 +201,17 @@ bool DataRecord::getText(std::string& strResult, std::string& strHeader, const u
 		strNewResult += format("\nLen: %ld", m_nLength);
 		strNewResult += format("\nCRC: %08X", m_nCrc);
 		if (m_dTimestamp != 0)
-		strNewResult += format("\nTimestamp: %.4f", m_dTimestamp);
+		strNewResult += format("\nTimestamp: %.5f", m_dTimestamp);
 		break;
 	case CAsterixFormat::EJSON:
 		if (m_dTimestamp != 0)
-		strNewResult = format("{\"id\":%d,\"length\":%ld,\"crc\":\"%08X\",\"timestamp\":%.4f,\"CAT%03d\":{", m_nID, m_nLength, m_nCrc, m_dTimestamp, m_pCategory->m_id);
+		strNewResult = format("{\"id\":%d,\"length\":%ld,\"crc\":\"%08X\",\"timestamp\":%.5f,\"CAT%03d\":{", m_nID, m_nLength, m_nCrc, m_dTimestamp, m_pCategory->m_id);
 		else
 			strNewResult = format("{\"id\":%d,\"length\":%ld,\"crc\":\"%08X\",\"CAT%03d\":{", m_nID, m_nLength, m_nCrc, m_pCategory->m_id);
 		break;
 	case CAsterixFormat::EJSONH:
 		if (m_dTimestamp != 0)
-		strNewResult = format("{\"id\":%d,\n\"length\":%ld,\n\"crc\":\"%08X\",\n\"timestamp\":%.4f,\n\"CAT%03d\":{\n", m_nID, m_nLength, m_nCrc, m_dTimestamp, m_pCategory->m_id);
+		strNewResult = format("{\"id\":%d,\n\"length\":%ld,\n\"crc\":\"%08X\",\n\"timestamp\":%.5f,\n\"CAT%03d\":{\n", m_nID, m_nLength, m_nCrc, m_dTimestamp, m_pCategory->m_id);
 		else
 			strNewResult = format("{\"id\":%d,\n\"length\":%ld,\n\"crc\":\"%08X\",\n\"CAT%03d\":{\n", m_nID, m_nCrc, m_nLength, m_pCategory->m_id);
 		break;

@@ -36,7 +36,7 @@
 /*
  * Read packet and store it in Descriptor.m_pBuffer
  */
-bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, bool oradis)
+bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, int oradis)
 {
 	CAsterixFormatDescriptor& Descriptor((CAsterixFormatDescriptor&)formatDescriptor);
 	size_t readSize = 0;
@@ -44,7 +44,7 @@ bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, C
 	if (device.IsPacketDevice())
 	{ // if using packet device read complete packet
 		readSize = device.MaxPacketSize();
-
+		
 		const unsigned char* pBuffer = Descriptor.GetNewBuffer(readSize);
 
 		// Read packet
@@ -64,8 +64,8 @@ bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, C
 	else
 	{ // if this is not packet device (e.g. it is file), read one by one Asterix record
 		int leftBytes = device.BytesLeftToRead();
-
-		if (oradis)
+		
+		if (!oradis)
 		{
 			// Read ORADIS header (6 bytes)
 			unsigned char oradisHeader[6];
@@ -105,9 +105,10 @@ bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, C
 				return false;
 			}
 		}
-		else
+		else if(oradis == 1 || oradis == 2)
 		{
-			// Read Asterix header (3 bytes)
+			// oradis == 2 File GPS
+			// Read Asterix header (3 bytes)	
 			unsigned char asterixHeader[3];
 			readSize = 3;
 			if (!device.Read((void*)asterixHeader, &readSize))
@@ -119,8 +120,20 @@ bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, C
 			// Calculate Asterix packet size
 			unsigned short dataLen = asterixHeader[1]; // length
 			dataLen <<= 8;
-			dataLen |= asterixHeader[2];
+			
+			if (oradis == 1)
+			{
+				
+				dataLen |= asterixHeader[2];
 
+			}
+			else
+			{
+				
+				dataLen |= asterixHeader[2] +10;
+
+			} 
+			
 			if (dataLen <= 3)
 			{
 				LOGERROR(1, "Wrong Asterix data length (%d)\n", dataLen);
@@ -143,7 +156,7 @@ bool CAsterixRawSubformat::ReadPacket(CBaseFormatDescriptor &formatDescriptor, C
 			{
 				LOGERROR(1, "Couldn't read packet.\n");
 				return false;
-			}
+			}	
 		}
 	}
 	return true;
@@ -157,7 +170,7 @@ bool CAsterixRawSubformat::WritePacket(CBaseFormatDescriptor &formatDescriptor, 
 /*
  * Parse packet read from UDP and stored to Descriptor.m_pBuffer
  */
-bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, bool oradis)
+bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, int oradis)
 {
 	CAsterixFormatDescriptor& Descriptor((CAsterixFormatDescriptor&)formatDescriptor);
 
@@ -182,7 +195,7 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 	double dTimestamp = (tp.tv_sec % 86400) * 1000 + tp.tv_usec / 1000;
 
 	// parse packet
-	if (oradis)
+	if (!oradis)
 	{
 		unsigned char* pPacketPtr = (unsigned char*) Descriptor.GetBuffer();
 		int m_nDataLength = Descriptor.GetBufferLen();
@@ -225,9 +238,42 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 			m_nDataLength -= byteCount;
 		}
 	}
-	else
+	else if(oradis == 1 || oradis == 2)
 	{
-		Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(Descriptor.GetBuffer(), Descriptor.GetBufferLen(), dTimestamp);
+		if (oradis == 1)
+		{
+			Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(Descriptor.GetBuffer(), Descriptor.GetBufferLen(), dTimestamp);
+		}
+		else
+		{
+			
+			//GPS
+			unsigned char* pPacketPtr = (unsigned char*) Descriptor.GetBuffer();
+			int m_nDataLength = Descriptor.GetBufferLen();
+			
+			if (m_nDataLength > 0)
+			{
+				unsigned short byteCount = m_nDataLength;
+
+				pPacketPtr += (byteCount - 4);
+				unsigned short byteTime = *pPacketPtr;
+				pPacketPtr ++;
+				
+				unsigned short byteTime2 = *pPacketPtr;
+				pPacketPtr ++;
+				
+				unsigned short byteTime3 = *pPacketPtr;
+				
+				double recorded_time = ((byteTime << 16) +
+					(byteTime2 << 8) + byteTime3) /128.0;
+				
+				dTimestamp = recorded_time;
+
+			}
+
+			Descriptor.m_pAsterixData = Descriptor.m_InputParser.parsePacket(Descriptor.GetBuffer(), Descriptor.GetBufferLen()-10, dTimestamp);
+		}
+	
 	}
 
 	return true;

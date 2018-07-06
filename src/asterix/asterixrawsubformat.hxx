@@ -37,11 +37,11 @@ class CAsterixRawSubformat
 {
 public:
 
-    static bool ReadPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, bool oradis=false);
+    static bool ReadPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, int oradis);
 
     static bool WritePacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, bool oradis=false);
 
-    static bool ProcessPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, bool oradis=false);
+    static bool ProcessPacket(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool &discard, int oradis);
 
     static bool Heartbeat(CBaseFormatDescriptor &formatDescriptor, CBaseDevice &device, bool oradis=false);
 
