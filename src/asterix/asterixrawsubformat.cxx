@@ -265,7 +265,7 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 				unsigned short byteTime3 = *pPacketPtr;
 				
 				double recorded_time = ((byteTime << 16) +
-					(byteTime2 << 8) + byteTime3) /128.0;
+					(byteTime2 << 8) + byteTime3) / 128.0;
 				
 				dTimestamp = recorded_time;
 
