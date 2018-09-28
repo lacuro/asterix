@@ -23,11 +23,11 @@
  */
 
 // Networking
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+//#include <sys/types.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
+#include <ws2tcpip.h>
 
 // Standard includes
 #include <sys/time.h>
@@ -193,7 +193,7 @@ bool CTcpDevice::Read(void *data, size_t len)
     {
     bytesReceived = recv(socketToRecv, ((char*)data)+totalReceived, len-totalReceived, MSG_NOSIGNAL);
 #else
-    bytesReceived = recv(socketToRecv, data, len, MSG_NOSIGNAL | MSG_WAITALL);
+    bytesReceived = recv(socketToRecv, (char *)data, len, MSG_NOSIGNAL | MSG_WAITALL);
 #endif
     
     if ( bytesReceived < 0)
@@ -261,7 +261,7 @@ bool CTcpDevice::Write(const void *data, size_t len)
     ASSERT(socketToSend >= 0); 
     
     // Write the message (blocking)
-    if (send(socketToSend, data, len, MSG_NOSIGNAL) < 0)
+    if (send(socketToSend, (char *)data, len, MSG_NOSIGNAL) < 0)
     {
         LOGERROR(1, "Error %d writing to socket %d. %s\n", 
             errno, socketToSend, strerror(errno));
@@ -303,11 +303,11 @@ bool CTcpDevice::Select(const unsigned int secondsToWait)
     fd_set descToRead;
     int selectVal;
     FD_ZERO(&descToRead);
-    FD_SET(socketToSelect, &descToRead);
+    FD_SET((unsigned int)socketToSelect, &descToRead);
     if (_server && _acceptPending)
     {
         // Add also the listening socket to the select list to be able to accept pending connections
-        FD_SET(_socketDesc, &descToRead);
+        FD_SET((unsigned int)_socketDesc, &descToRead);
     }
     
     if (secondsToWait)
@@ -406,7 +406,7 @@ bool CTcpDevice::Connect()
             
                 // Enable local address reuse
             int opt = 1;
-            if (setsockopt(_socketDesc, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) != 0)
+            if (setsockopt(_socketDesc, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) != 0)
             {
                 LOGWARNING(1, "Error %d on setsockopt(). %s\n", errno, strerror(errno));
                 close(_socketDesc);
@@ -448,15 +448,18 @@ bool CTcpDevice::Connect()
 
 bool CTcpDevice::AcceptPending()
 {
-    int fd_flags = fcntl(_socketDesc, F_GETFL, 0);
+    //int fd_flags = fcntl(_socketDesc, 3, 0);
+    int fd_flags = ioctlsocket(_socketDesc, 3, 0);
     int fd_flags_block = fd_flags & ~FNDELAY;  // Blocking on
     int fd_flags_noblock = fd_flags | FNDELAY; // Blocking off
         
     // Accept (NON-BLOCKING) if there is a pending connection        
-    fcntl(_socketDesc, F_SETFL, fd_flags_noblock);
+    //fcntl(_socketDesc, F_SETFL, fd_flags_noblock);
+    ioctlsocket(_socketDesc, F_SETFL, (u_long*) fd_flags_noblock);
     int socketDescNewSession = accept (_socketDesc, (struct sockaddr *)
         &_clientAddr, (socklen_t *) &_clientAddrLen);
-    fcntl(_socketDesc, F_SETFL, fd_flags_block);         // Get back to blocking mode
+    //fcntl(_socketDesc, F_SETFL, fd_flags_block);         // Get back to blocking mode
+    ioctlsocket(_socketDesc, F_SETFL, (u_long*) fd_flags_block);
 
     if (socketDescNewSession < 0)
     {
@@ -507,7 +510,7 @@ bool CTcpDevice::Disconnect(bool bLinger)
         {
             ASSERT(_socketDescSession >= 0);
             
-            if (setsockopt(_socketDescSession, SOL_SOCKET, SO_LINGER, &sl, sizeof(sl)) != 0)
+            if (setsockopt(_socketDescSession, SOL_SOCKET, SO_LINGER, (char *)&sl, sizeof(sl)) != 0)
             {
                 LOGWARNING(1, "Error %d on setsockopt(). %s\n", errno, strerror(errno));
             }
@@ -527,7 +530,7 @@ bool CTcpDevice::Disconnect(bool bLinger)
         {
             ASSERT(_socketDesc >= 0);
             
-            if (setsockopt(_socketDesc, SOL_SOCKET, SO_LINGER, &sl, sizeof(sl)) != 0)
+            if (setsockopt(_socketDesc, SOL_SOCKET, SO_LINGER, (char *)&sl, sizeof(sl)) != 0)
             {
                 LOGWARNING(1, "Error %d on setsockopt(). %s\n", errno, strerror(errno));
             }
@@ -617,7 +620,7 @@ bool CTcpDevice::InitClient(const char *serverAddress, const int serverPort, con
 
     // Enable local address reuse
     int opt = 1;
-    if (setsockopt(_socketDesc, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) != 0)
+    if (setsockopt(_socketDesc, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) != 0)
     {
         LOGWARNING(1, "Error %d on setsockopt(). %s\n", errno, strerror(errno));
     }

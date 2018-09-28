@@ -33,8 +33,10 @@ include $(TOP)/src/makefile.include
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-TARGET_EXE = $(OBJ_DIR)/asterix
-TARGET_INSTALL = asterix
+#TARGET_EXE = $(OBJ_DIR)/asterix
+#TARGET_INSTALL = asterix
+TARGET_EXE = $(OBJ_DIR)/asterix.exe
+TARGET_INSTALL = asterix.exe	
 else
 TARGET_EXE = $(OBJ_DIR)/asterix.exe
 TARGET_INSTALL = asterix.exe
@@ -42,7 +44,7 @@ endif
 
 # Libraries
 
-LIBS = -lengine -lasterix -lexpat
+LIBS = -lengine -lasterix -lexpat -lws2_32
 
 OBJS = asterix.o
 

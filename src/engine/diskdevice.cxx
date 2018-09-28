@@ -29,6 +29,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <errno.h>
+#include <ws2tcpip.h>
 
 // Local includes
 #include "asterix.h"
@@ -124,7 +125,7 @@ bool CDiskDevice::Read(void *data, size_t len)
 
     _onstart = false;
 
-//    LOGDEBUG(ZONE_DISKDEVICE, "Read message from file.\n");
+   //    LOGDEBUG(ZONE_DISKDEVICE, "Read message from file.\n");
 
     if(BytesLeftToRead() == 0)
     {
@@ -290,7 +291,7 @@ bool CDiskDevice::Init(const char *path)
          ASSERT( !(_mode & DD_MODE_PACKETFILE) ); // not supported for input
 //         ASSERT( !(_mode & DD_MODE_TEMPNAME) ); // not supported for input
 
-        _fileStream = fopen(fname, "r");
+        _fileStream = fopen(fname, "rb");
         if(strstr(fname,".gps"))
         {
 

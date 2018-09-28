@@ -24,9 +24,10 @@
 #ifndef UDPDEVICE_HXX__
 #define UDPDEVICE_HXX__
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
+#include <ws2tcpip.h>
 #include <vector>
 
 #include "basedevice.hxx"
@@ -41,6 +42,10 @@
 #endif
 
 #define MAX_UDP_PACKET_SIZE     3000
+
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0x4000
+#endif
 
 /**
  * @class CUdpDevice

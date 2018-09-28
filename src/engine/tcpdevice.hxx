@@ -23,17 +23,32 @@
 #ifndef TCPDEVICE_HXX__
 #define TCPDEVICE_HXX__
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
+#include <ws2tcpip.h>
 
 #include "basedevice.hxx"
 #include "descriptor.hxx"
+
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0x4000
+#endif
+
+#ifndef FNDELAY
+#define FNDELAY 0x4000
+#endif
+
+#ifndef F_SETFL
+#define F_SETFL 4
+#endif
+
 
 /*
  * MSG_NOSIGNAL is not defined on OS X
  * but has an equivalent (SO_NOSIGPIPE)
  */
+
 #ifdef __APPLE__
 #define MSG_NOSIGNAL SO_NOSIGPIPE
 #endif

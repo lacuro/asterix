@@ -25,6 +25,7 @@
 
 #include <sys/param.h>
 #include <unistd.h>
+#include <ws2tcpip.h>
 
 #include "basedevice.hxx"
 #include "descriptor.hxx"

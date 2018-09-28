@@ -27,10 +27,11 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <termios.h>
+//#include <termios.h>
 #include <ctype.h>
 #include <stdlib.h> //atoi
 #include <errno.h>
+#include <ws2tcpip.h>
 
 
 // Local includes
@@ -43,7 +44,7 @@ CSerialDevice::CSerialDevice(CDescriptor &descriptor)
 {
     const char *sdevice   = descriptor.GetFirst();
     const char *sbaudRate = descriptor.GetNext();
-    int speed;
+    //int speed;
 
 
     // Device name argument
@@ -58,13 +59,14 @@ CSerialDevice::CSerialDevice(CDescriptor &descriptor)
 
     // Baud rate argument
 
-    ConvertSpeed(_defaultBaudRate, _baudRate);  // Firstly, set the baud rate to default
+    //ConvertSpeed(_defaultBaudRate, _baudRate);  // Firstly, set the baud rate to default
     if (sbaudRate == NULL)
     {
         LOGWARNING(gVerbose, "Serial port baud rate not specified. Using default: %d\n", _defaultBaudRate);
-    }
+    }/*
     else
     {
+        
         speed = atoi(sbaudRate);
         if (!ConvertSpeed(speed, _baudRate))
         {
@@ -74,7 +76,7 @@ CSerialDevice::CSerialDevice(CDescriptor &descriptor)
         {
             LOGINFO(gVerbose, "Serial port baud rate set to %d\n", speed);
         }
-    }
+    }*/
 
     Init(sdevice);
 }
@@ -203,7 +205,7 @@ bool CSerialDevice::Select(const unsigned int secondsToWait)
     fd_set descToRead;
     int selectVal;
     FD_ZERO(&descToRead);
-    FD_SET(_fileDesc, &descToRead);
+    FD_SET((unsigned int)_fileDesc, &descToRead);
 
     if (secondsToWait)
     {
@@ -263,7 +265,7 @@ void CSerialDevice::Init(const char *device)
         return;
     }
 
-/*    // Set file descriptor as blocking
+ /*    // Set file descriptor as blocking
     int fd_flags = fcntl(_fileDesc, F_GETFL, 0);
     int fd_flags_block = fd_flags & ~FNDELAY;  // Blocking on
     int fd_flags_noblock = fd_flags | FNDELAY; // Blocking off
@@ -271,6 +273,7 @@ void CSerialDevice::Init(const char *device)
 
 
     // Get the current termios settings
+    /*
     struct termios my_termios;
     if (tcgetattr(_fileDesc, &my_termios) < 0)
     {
@@ -310,12 +313,12 @@ void CSerialDevice::Init(const char *device)
     // c_line is not defined on OS X
     LOGDEBUG(ZONE_SERIALDEVICE, "new line=%02x\n", my_termios.c_line);
 #endif
-
+*/
     _opened = true;
 }
 
 
-
+/*
 bool CSerialDevice::ConvertSpeed(int speed, speed_t &baudRate)
 {
     switch (speed)
@@ -357,4 +360,4 @@ bool CSerialDevice::ConvertSpeed(int speed, speed_t &baudRate)
             return false;
     }
     return true;
-}
+}*/

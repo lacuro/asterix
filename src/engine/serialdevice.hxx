@@ -23,10 +23,14 @@
 #ifndef SERIALDEVICE_HXX__
 #define SERIALDEVICE_HXX__
 
-#include <termios.h>  // speed_t
+//#include <termios.h>  // speed_t
 
 #include "basedevice.hxx"
 #include "descriptor.hxx"
+
+#ifndef O_NOCTTY
+#define O_NOCTTY 0
+#endif
 
 /**
  * @class CSerialDevice
@@ -41,7 +45,7 @@ class CSerialDevice : public CBaseDevice
 private:
     int                _fileDesc;
     static const int   _defaultBaudRate = 9600;
-    speed_t            _baudRate;
+    //speed_t            _baudRate;
 
 public:
 
@@ -65,7 +69,7 @@ public:
 
 private:
     void Init(const char *device);
-    static bool ConvertSpeed(int speed, speed_t &baudRate);
+    //static bool ConvertSpeed(int speed, speed_t &baudRate);
 };
 
 #endif

@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <ws2tcpip.h>
 
 // Local includes
 #include "asterix.h"
@@ -102,7 +103,7 @@ bool CStdDevice::Select(const unsigned int secondsToWait)
     {
 		// Configure 'set' of single stdin file descriptor
 		FD_ZERO(&descToRead);
-		FD_SET(STDIN_FILENO, &descToRead);
+		FD_SET((unsigned int)STDIN_FILENO, &descToRead);
 
 		if (secondsToWait)
 		{
