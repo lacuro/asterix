@@ -70,9 +70,8 @@ endif
 
 INCLUDEDIRS   = -I$(TOP)/src/engine \
                 -I$(TOP)/src/asterix \
-                -I$(TOP)/src/main \
-                
-                
+                -I$(TOP)/src/main 
+
 LIBDIRS       = -L$(TOP)/lib/$(OBJ_DIR_SHORT) 
 ARFLAGS       = rcs
 LDFLAGS       = $(LIBDIRS) -static-libgcc -static-libstdc++
