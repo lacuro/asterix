@@ -383,7 +383,7 @@ bool CUdpDevice::InitClient(int socketDesc)
     struct sockaddr_in clientAddr;
 
     // Bind any port
-    clientAddr.sin_family = AF_INET;
+    clientAddr.sin_family = PF_INET;
     clientAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     clientAddr.sin_port = htons(0);
 
