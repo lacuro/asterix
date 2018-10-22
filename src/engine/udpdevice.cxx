@@ -160,6 +160,7 @@ CUdpDevice::~CUdpDevice()
     for(unsigned int i=0; i<_socketDesc.size(); i++)
     {
         close(_socketDesc[i]);
+        WSACleanup();
     }
     _countToRead = 0;
 }
@@ -185,7 +186,7 @@ bool CUdpDevice::Read(void *data, size_t* len)
     // Get the message (blocking)
     struct sockaddr_in clientAddr;
     socklen_t clientLen = sizeof(clientAddr);
-
+    
     for(unsigned int i=0; i<_socketDesc.size() && _countToRead>0; i++)
     {
 	if ( FD_ISSET((unsigned int)_socketDesc[i], &_descToRead) )
@@ -193,11 +194,11 @@ bool CUdpDevice::Read(void *data, size_t* len)
 	    _countToRead--;
 	    // _socketDesc is going to be read, clear bits
 	    FD_CLR((unsigned int)_socketDesc[i], &_descToRead);
-	    ssize_t lenread = recvfrom(_socketDesc[i], (char *)data, *len, MSG_NOSIGNAL, (struct sockaddr *) &clientAddr, &clientLen);
-	    if (lenread < 0)
+	    ssize_t lenread = recvfrom(_socketDesc[i], (char *)data, *len, 0, (struct sockaddr *) &clientAddr, &clientLen);
+        if (lenread < 0)
 	    {
-		LOGERROR(1, "Error reading from %s on address %s.\n",
-		     inet_ntoa(clientAddr.sin_addr),
+		    LOGERROR(1, "Error reading from %s on address %s.\n",
+		    inet_ntoa(clientAddr.sin_addr),
 		    inet_ntoa(_mcastAddr.sin_addr));
 		    CountReadError();
 		return false;
@@ -302,8 +303,8 @@ bool CUdpDevice::InitServer(int socketDesc)
 
     // Bind server port
     memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-
+    serverAddr.sin_family = PF_INET;
+    
     if (IN_MULTICAST(ntohl(_mcastAddr.sin_addr.s_addr)))
     {
        serverAddr.sin_addr.s_addr = _mcastAddr.sin_addr.s_addr;
@@ -322,14 +323,14 @@ bool CUdpDevice::InitServer(int socketDesc)
 
             if (bind(socketDesc, (struct sockaddr*) &serverAddr, sizeof(serverAddr)) < 0)
             {
-		LOGERROR(1, "Cannot bind multicast address %s and port number %d\n", inet_ntoa(_mcastAddr.sin_addr), _port);
+		        LOGERROR(1, "Cannot bind multicast address %s and port number %d\n", inet_ntoa(_mcastAddr.sin_addr), _port);
                 return false;
             }
         }
         else
         {
-        LOGERROR(1, "Cannot bind port number %d\n", _port);
-        return false;
+            LOGERROR(1, "Cannot bind port number %d\n", _port);
+            return false;
         }
     }
 
@@ -413,16 +414,22 @@ void CUdpDevice::Init(const char *mcastAddress, const char *interfaceAddress, co
     struct hostent *host;
     u_int yes=1;
     int socketDesc;
-
+    WSADATA wsaData;
+    
     _opened = false;
     //_socketDesc = -1;
     _server = server;
     _port   = port;
     //_countToRead = 0;
-
+    
 
     // 1. Global initialization
 
+    if( WSAStartup(MAKEWORD(2,2), &wsaData))
+    {
+        LOGERROR(1, "WSAStartup failed\n"); 
+        return;       
+    }
     // 1.1 Multicast address
     ASSERT(mcastAddress);
     host = gethostbyname(mcastAddress);
@@ -431,7 +438,7 @@ void CUdpDevice::Init(const char *mcastAddress, const char *interfaceAddress, co
         LOGERROR(1, "Unknown multicast group '%s'\n", mcastAddress);
         return;
     }
-
+ 
     _mcastAddr.sin_family = host->h_addrtype;
     memcpy(&_mcastAddr.sin_addr.s_addr, host->h_addr_list[0], host->h_length);
 /*
@@ -440,14 +447,14 @@ void CUdpDevice::Init(const char *mcastAddress, const char *interfaceAddress, co
         LOGERROR(1, "Destination address %s is not multicast\n", mcastAddress);
         return;
     }
-*/
+*/     
     _mcastAddr.sin_port = htons(_port);
 
 
     // 1.1b Source interface
     if (srcAddress != NULL && strlen(srcAddress) != 0)
 	{
-		// Specific interface is chosen
+        // Specific interface is chosen
 		host = gethostbyname(srcAddress);
 		if (host == NULL)
 		{
@@ -458,7 +465,7 @@ void CUdpDevice::Init(const char *mcastAddress, const char *interfaceAddress, co
 	}
 	else
 	{
-		// Source address not chosen
+        // Source address not chosen
 		_sourceAddr.s_addr = htonl(INADDR_ANY);
 	}
 
@@ -481,7 +488,7 @@ void CUdpDevice::Init(const char *mcastAddress, const char *interfaceAddress, co
     }
 
     // 1.3 Socket
-    socketDesc = socket(AF_INET, SOCK_DGRAM, 0);
+    socketDesc = socket(PF_INET, SOCK_DGRAM, 0);
     if (socketDesc < 0)
     {
         LOGERROR(1, "Cannot open socket\n");

@@ -83,6 +83,7 @@ static void show_usage(std::string name)
 			  << "\n\nData source"
 			  << "\n------------"
 			  << "\n\t-f filename\tFile generated from libpcap (tcpdump or Wireshark) or file in FINAL or HDLC format.\n\t\t\tFor example: -f filename.pcap"
+			  << "\n\t-g filename\tFile GPS format\n\t\t\tFor example: -g filename.gps"
 			  << "\n\t-i m:i:p[:s]\tMulticast UDP/IP address:Interface address:Port[:Source address].\n\t\t\tFor example: 232.1.1.12:10.17.58.37:21112:10.17.22.23\n\t\t\tMore than one multicast group could be defined, use @ as separator.\n\t\t\tFor example: 232.1.1.13:10.17.58.37:21112:10.17.22.23@232.1.1.14:10.17.58.37:21112:10.17.22.23"
 			  << std::endl;
 }
@@ -94,7 +95,7 @@ int main(int argc, const char *argv[])
     	show_usage("asterix.exe");
         return 1;
     }
-
+	
 	std::string strDefinitions = "config/asterix.ini";
 	std::string strFileInput;
 	std::string strIPInput;
@@ -271,7 +272,7 @@ int main(int argc, const char *argv[])
 
 	// definitions file
 	gAsterixDefinitionsFile = strDefinitions.c_str();
-
+	
 	// check for definitions file
 	FILE *tmp = fopen(gAsterixDefinitionsFile, "r");
 	if (tmp == NULL)
@@ -280,7 +281,7 @@ int main(int argc, const char *argv[])
 		exit (2);
 	}
 	fclose(tmp);
-
+	
 	// Create input string
 	std::string strInput = "std 0 ";
 	std::string strInputFixed = "";
@@ -359,7 +360,7 @@ int main(int argc, const char *argv[])
     			std::cerr << "Error: Format description not found." << std::endl;
     			exit (2);
 			}
-
+			
     		FILE *ff = fopen(strFilterFile.c_str(), "r");
     		if (ff == NULL)
     		{
@@ -431,7 +432,7 @@ int main(int argc, const char *argv[])
     	}
     	else
     	{
-    		CConverterEngine::Instance()->Start();
+			CConverterEngine::Instance()->Start();
     	}
     }
     else
