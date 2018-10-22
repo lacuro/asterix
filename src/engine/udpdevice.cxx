@@ -234,7 +234,7 @@ bool CUdpDevice::Write(const void *data, size_t len)
     // Set the server address
 
     // Write the message (blocking)
-    if (sendto(_socketDesc[0], (char *)data, len, MSG_NOSIGNAL, (struct sockaddr*) &_mcastAddr, sizeof(_mcastAddr)) < 0)
+    if (sendto(_socketDesc[0], (char *)data, len, 0, (struct sockaddr*) &_mcastAddr, sizeof(_mcastAddr)) < 0)
     {
         LOGERROR(1, "Error %d writing to %s.\n",
             errno, inet_ntoa(_mcastAddr.sin_addr));
