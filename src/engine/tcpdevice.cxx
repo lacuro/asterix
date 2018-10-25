@@ -156,6 +156,7 @@ CTcpDevice::~CTcpDevice()
     if (_socketDesc >= 0)
     {
         close(_socketDesc);
+        WSACleanup();
     }
 }
 
@@ -261,7 +262,7 @@ bool CTcpDevice::Write(const void *data, size_t len)
     ASSERT(socketToSend >= 0); 
     
     // Write the message (blocking)
-    if (send(socketToSend, (char *)data, len, MSG_NOSIGNAL) < 0)
+    if (send(socketToSend, (char *)data, len, 0) < 0)
     {
         LOGERROR(1, "Error %d writing to socket %d. %s\n", 
             errno, socketToSend, strerror(errno));
@@ -397,7 +398,7 @@ bool CTcpDevice::Connect()
         else
         {
             // Client will open and bind socket again
-            _socketDesc = socket(AF_INET, SOCK_STREAM, 0);
+            _socketDesc = socket(PF_INET, SOCK_STREAM, 0);
             if (_socketDesc < 0)
             {
                 LOGERROR(1, "Cannot re-open socket\n");
@@ -560,7 +561,7 @@ bool CTcpDevice::InitServer(const char *serverAddress, const int serverPort)
     if ((serverAddress == NULL) || (strlen(serverAddress) == 0)) 
     {
         // Bind any server address
-        _serverAddr.sin_family = AF_INET;
+        _serverAddr.sin_family = PF_INET;
         _serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
         _serverAddr.sin_port = htons(serverPort);
     }
@@ -628,7 +629,7 @@ bool CTcpDevice::InitClient(const char *serverAddress, const int serverPort, con
     if ((clientAddress == NULL) || (strlen(clientAddress) == 0)) 
     {
         // Bind any client address
-        _clientAddr.sin_family = AF_INET;
+        _clientAddr.sin_family = PF_INET;
         _clientAddr.sin_addr.s_addr = htonl(INADDR_ANY);
         _clientAddr.sin_port = htons(clientPort);
     }
@@ -667,12 +668,18 @@ void CTcpDevice::Init(const char *serverAddress, const int serverPort, const cha
     _socketDesc = -1;
     _socketDescSession = -1;
     _server = server;
+    WSADATA wsaData;
 
         
     // 1. Global initialization
+    if( WSAStartup(MAKEWORD(2,2), &wsaData))
+    {
+        LOGERROR(1, "WSAStartup failed\n"); 
+        return;       
+    }
       
     // Get Socket
-    _socketDesc = socket(AF_INET, SOCK_STREAM, 0);
+    _socketDesc = socket(PF_INET, SOCK_STREAM, 0);
     if (_socketDesc < 0)
     {
         LOGERROR(1, "Cannot open socket\n");
