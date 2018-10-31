@@ -161,8 +161,6 @@ bool CAsterixFormat::ProcessPacket(CBaseFormatDescriptor& formatDescriptor, CBas
   {
       case ERaw:
       {  
-          //LOGERROR(1, "Dentro de ERAw\n");
-          
           int oradis = 0; //Default oradis 
           
           CDiskDevice *diskDevice = dynamic_cast<CDiskDevice *>(&device);
@@ -242,7 +240,7 @@ CBaseFormatDescriptor* CAsterixFormat::CreateFormatDescriptor
 {
   if (!m_pFormatDescriptor)
   {
-	  char inputFile[256];
+      char inputFile[256];
 
 	  Tracer::Configure(debug_trace);
 
