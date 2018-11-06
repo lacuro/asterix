@@ -194,7 +194,6 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
         
 	double dTimestamp = (tp.tv_sec % 86400) * 1000 + tp.tv_usec / 1000;
 
-	LOGDEBUG(1, "CAsterixRawSubformat::ProcessPacket (Antes) dTimestamp->%f \n",dTimestamp);
 	// parse packet
 	if (!oradis)
 	{
