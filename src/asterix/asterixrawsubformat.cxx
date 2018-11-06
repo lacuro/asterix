@@ -256,16 +256,16 @@ bool CAsterixRawSubformat::ProcessPacket(CBaseFormatDescriptor &formatDescriptor
 				unsigned short byteCount = m_nDataLength;
 
 				pPacketPtr += (byteCount - 4);
-				unsigned short byteTime = *pPacketPtr;
+				unsigned short byteSixthTime = *pPacketPtr;
 				pPacketPtr ++;
 				
-				unsigned short byteTime2 = *pPacketPtr;
+				unsigned short byteSeventhTime = *pPacketPtr;
 				pPacketPtr ++;
 				
-				unsigned short byteTime3 = *pPacketPtr;
+				unsigned short byteEighthTime = *pPacketPtr;
 				
-				double recorded_time = ((byteTime << 16) +
-					(byteTime2 << 8) + byteTime3) / 128.0;
+				double recorded_time = ((byteSixthTime << 16) +
+					(byteSeventhTime << 8) + byteEighthTime) / 128.0;
 				
 				dTimestamp = recorded_time;
 
