@@ -93,11 +93,11 @@ bool CDeviceFactory::CreateDevice(const char* deviceName, const char* deviceDesc
         CDescriptor descriptor(deviceDescriptor, ":");
         _Device[_nDevices] = new CDiskDevice(descriptor);
     }
-    else if (strcasecmp(deviceName, "serial") == 0)
+    /*else if (strcasecmp(deviceName, "serial") == 0)
     {
         CDescriptor descriptor(deviceDescriptor, ":");
         _Device[_nDevices] = new CSerialDevice(descriptor);
-    }
+    }*/
     else 
     {
         LOGERROR(1, "Unknown device '%s'\n", deviceName);
