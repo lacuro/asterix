@@ -159,10 +159,10 @@ CUdpDevice::~CUdpDevice()
 {
     for(unsigned int i=0; i<_socketDesc.size(); i++)
     {
-        close(_socketDesc[i]);
-        WSACleanup();
+        close(_socketDesc[i]);      
     }
     _countToRead = 0;
+    WSACleanup();
 }
 
 

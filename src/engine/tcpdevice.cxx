@@ -151,6 +151,7 @@ CTcpDevice::~CTcpDevice()
     if (_socketDescSession >= 0)
     {
         close(_socketDescSession);
+        WSACleanup();
     }
     
     if (_socketDesc >= 0)
