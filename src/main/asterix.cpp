@@ -295,7 +295,7 @@ int main(int argc, const char *argv[])
 
 		if (bLoopFile)
 		{
-			strInput += "65 ";
+			strInput += "10 ";
 		}
 		else
 		{
